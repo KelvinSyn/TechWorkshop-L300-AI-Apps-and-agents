@@ -21,8 +21,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the rest of the code
 COPY . .
 
-# Copy .env file into the image (for python-dotenv)
-COPY .env .env
+# Accept env contents as a build arg and write to .env at build time
+ARG ENV_CONTENTS
+RUN test -n "$ENV_CONTENTS" && echo "$ENV_CONTENTS" > .env || (echo "ERROR: ENV_CONTENTS build arg is required" && exit 1)
 
 # Expose the port (default FastAPI/uvicorn port)
 EXPOSE 8000
